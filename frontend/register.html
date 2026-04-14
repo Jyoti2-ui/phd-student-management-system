@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register — PHD Student Management System</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --red: #b8121f;
+      --red-dark: #8a0d17;
+      --white: #ffffff;
+      --off-white: #f9f7f5;
+      --gray: #6b6b6b;
+      --light-gray: #e5e1dc;
+      --text: #1c1c1c;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { font-family: 'DM Sans', sans-serif; background: var(--off-white); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── LEFT PANEL ── */
+    .left {
+      background: var(--red);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .left::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.03) 60px, rgba(255,255,255,0.03) 61px),
+        repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.03) 60px, rgba(255,255,255,0.03) 61px);
+      pointer-events: none;
+    }
+
+    .left::after {
+      content: '';
+      position: absolute;
+      bottom: -100px; right: -100px;
+      width: 380px; height: 380px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.08);
+      pointer-events: none;
+    }
+
+    .circle-2 { position: absolute; bottom: -40px; right: -40px; width: 240px; height: 240px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.06); pointer-events: none; }
+    .circle-3 { position: absolute; top: -60px; left: -60px; width: 200px; height: 200px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.05); pointer-events: none; }
+
+    .logo-area { display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; position: relative; z-index: 1; }
+    .logo-img { width: 80px; height: 80px; object-fit: contain; background: white; border-radius: 50%; padding: 8px; }
+    .logo-text { border-left: 2px solid rgba(255,255,255,0.3); padding-left: 1rem; }
+    .logo-text .univ-name { font-family: 'EB Garamond', serif; font-size: 1.25rem; color: var(--white); font-weight: 500; line-height: 1.3; }
+    .logo-text .estd { font-size: 11.5px; color: rgba(255,255,255,0.5); font-weight: 300; margin-top: 3px; letter-spacing: 0.06em; }
+
+    .left-middle { position: relative; z-index: 1; }
+    .left-middle .label { font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 1rem; }
+    .left-middle .big-text { font-family: 'EB Garamond', serif; font-size: clamp(2rem, 3.5vw, 3rem); color: var(--white); font-weight: 500; line-height: 1.2; margin-bottom: 1.25rem; }
+    .divider { width: 40px; height: 2px; background: rgba(255,255,255,0.3); margin-bottom: 1.25rem; }
+    .left-middle .sub { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.8; font-weight: 300; max-width: 300px; }
+
+    .left-bottom { position: relative; z-index: 1; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.25rem; }
+    .left-bottom p { font-size: 11.5px; color: rgba(255,255,255,0.35); font-weight: 300; }
+
+    /* ── RIGHT PANEL ── */
+    .right { background: var(--off-white); display: flex; flex-direction: column; justify-content: center; padding: 3rem 4rem; position: relative; overflow-y: auto; }
+    .right-inner { max-width: 400px; width: 100%; }
+
+    .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--gray); text-decoration: none; margin-bottom: 1.5rem; font-weight: 300; transition: color 0.2s; }
+    .back-link:hover { color: var(--red); }
+    .back-link svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .form-title { font-family: 'EB Garamond', serif; font-size: clamp(1.6rem, 2.5vw, 2.1rem); font-weight: 500; color: var(--text); margin-bottom: 0.4rem; }
+    .form-sub { font-size: 13.5px; color: var(--gray); font-weight: 300; margin-bottom: 1.5rem; }
+
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 12.5px; font-weight: 500; color: var(--text); margin-bottom: 5px; letter-spacing: 0.02em; }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1px solid var(--light-gray);
+      border-radius: 5px;
+      font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      color: var(--text);
+      background: var(--white);
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus { border-color: var(--red); }
+    .form-group input::placeholder { color: #bbb; font-weight: 300; }
+
+    .select-wrap { position: relative; }
+    .select-wrap::after { content: ''; position: absolute; right: 14px; top: 50%; transform: translateY(-50%); width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-top: 5px solid var(--gray); pointer-events: none; }
+    .select-wrap select { padding-right: 36px; cursor: pointer; }
+
+    /* dept field hidden by default */
+    #deptGroup { display: none; }
+
+    .pw-wrap { position: relative; }
+    .pw-wrap input { padding-right: 42px; }
+    .pw-toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; padding: 0; color: #bbb; display: flex; align-items: center; }
+    .pw-toggle:hover { color: var(--gray); }
+    .pw-toggle svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+
+    .error-msg { display: none; font-size: 12.5px; color: var(--red); background: #fdf0f1; border: 1px solid #f5c0c4; border-radius: 4px; padding: 10px 12px; margin-bottom: 1rem; }
+    .error-msg.show { display: block; }
+
+    .success-msg { display: none; font-size: 13px; color: #1a6b3c; background: #edfaf3; border: 1px solid #b3e6cc; border-radius: 4px; padding: 10px 12px; margin-bottom: 1rem; }
+    .success-msg.show { display: block; }
+
+    .submit-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--red);
+      color: var(--white);
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      font-family: 'DM Sans', sans-serif;
+      padding: 13px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.2s;
+      letter-spacing: 0.02em;
+      margin-top: 0.5rem;
+    }
+
+    .submit-btn:hover { background: var(--red-dark); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .submit-btn svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .login-link { text-align: center; margin-top: 1.25rem; font-size: 13px; color: var(--gray); font-weight: 300; }
+    .login-link a { color: var(--red); text-decoration: none; font-weight: 500; }
+    .login-link a:hover { text-decoration: underline; }
+
+    .footer-strip { position: absolute; bottom: 0; left: 0; right: 0; padding: 14px 4rem; border-top: 1px solid var(--light-gray); display: flex; justify-content: space-between; align-items: center; }
+    .footer-strip span { font-size: 11.5px; color: #aaa; font-weight: 300; }
+    .footer-strip a { font-size: 11.5px; color: var(--red); text-decoration: none; }
+
+    .fade-in { opacity: 0; animation: fadeIn 0.6s ease forwards; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .d1{ animation-delay: 0.1s } .d2{ animation-delay: 0.2s } .d3{ animation-delay: 0.3s }
+
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; }
+      .left { min-height: 40vh; padding: 2.5rem 2rem; }
+      .right { padding: 3rem 2rem 5rem; }
+      .right-inner { max-width: 100%; }
+      .footer-strip { padding: 14px 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- LEFT -->
+  <div class="left">
+    <div class="circle-2"></div>
+    <div class="circle-3"></div>
+
+    <div class="logo-area fade-in d1">
+      <img class="logo-img"
+        src="https://upload.wikimedia.org/wikipedia/en/thumb/0/08/Somaiya_Vidyavihar_University_logo.png/220px-Somaiya_Vidyavihar_University_logo.png"
+        alt="Somaiya Logo" onerror="this.style.display='none'"/>
+      <div class="logo-text">
+        <div class="univ-name">Somaiya Vidyavihar<br/>University</div>
+        <div class="estd">Estd. 1959 · Mumbai, India</div>
+      </div>
+    </div>
+
+    <div class="left-middle fade-in d2">
+      <div class="label">New Registration</div>
+      <div class="big-text">Create your<br/>portal account</div>
+      <div class="divider"></div>
+      <div class="sub">
+        Register with your university details
+        to get access to your role-based
+        dashboard on the PHD portal.
+      </div>
+    </div>
+
+    <div class="left-bottom fade-in d3">
+      <p>&copy; 2025 Somaiya Vidyavihar University. All rights reserved.</p>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="right-inner">
+
+      <a href="landing.html" class="back-link fade-in d1">
+        <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to home
+      </a>
+
+      <h1 class="form-title fade-in d2">Register</h1>
+      <p class="form-sub fade-in d3">Fill in your details to create your account</p>
+
+      <div class="error-msg" id="errorMsg"></div>
+      <div class="success-msg" id="successMsg"></div>
+
+      <!-- Full Name -->
+      <div class="form-group fade-in d1">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" placeholder=""/>
+      </div>
+
+      <!-- Email -->
+      <div class="form-group fade-in d1">
+        <label for="email">University Email</label>
+        <input type="email" id="email" placeholder="yourname@somaiya.edu"/>
+      </div>
+
+      <!-- Role -->
+      <div class="form-group fade-in d2">
+        <label for="role">Register as</label>
+        <div class="select-wrap">
+          <select id="role" onchange="handleRoleChange()">
+            <option value="">— Select your role —</option>
+            <option value="student">Student</option>
+            <option value="coordinator">Coordinator</option>
+            <option value="hod">Head of Department (HOD)</option>
+            <option value="head_coordinator">Head Coordinator</option>
+            <option value="principal">Principal</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Department (shown only for student, coordinator, hod) -->
+      <div class="form-group fade-in d2" id="deptGroup">
+        <label for="department">Department</label>
+        <div class="select-wrap">
+          <select id="department">
+            <option value="">— Select department —</option>
+            <option value="CSE">Computer Science and Engineering (CSE)</option>
+            <option value="IT">Information Technology (IT)</option>
+            <option value="MECH">Mechanical Engineering (MECH)</option>
+            <option value="RAI">Robotics and Artificial Intelligence (RAI)</option>
+            <option value="VLSI">VLSI Design (VLSI)</option>
+            <option value="EXTC">Electronics and Telecommunication (EXTC)</option>
+            <option value="CIVIL">Civil Engineering (CIVIL)</option>
+            <option value="AIDS">Artificial Intelligence and Data Science (AIDS)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group fade-in d2">
+        <label for="password">Password</label>
+        <div class="pw-wrap">
+          <input type="password" id="password" placeholder="Create a password"/>
+          <button class="pw-toggle" id="pwToggle" type="button">
+            <svg id="eyeIcon" viewBox="0 0 24 24">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <button class="submit-btn fade-in d3" id="registerBtn" type="button">
+        <span id="btnText">Create Account</span>
+        <div class="spinner" id="spinner"></div>
+        <svg id="btnArrow" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+
+      <p class="login-link fade-in d3">
+        Already have an account? <a href="login.html">Login here</a>
+      </p>
+
+    </div>
+
+    <div class="footer-strip">
+      <span>PHD Student Management System</span>
+      <a href="#">IT Support</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const API = "http://localhost:3000";
+
+  // Show/hide department based on role
+  function handleRoleChange() {
+    const role = document.getElementById("role").value;
+    const deptGroup = document.getElementById("deptGroup");
+    const rolesWithDept = ["student", "coordinator", "hod"];
+    deptGroup.style.display = rolesWithDept.includes(role) ? "block" : "none";
+    if (!rolesWithDept.includes(role)) {
+      document.getElementById("department").value = "";
+    }
+  }
+
+  // Password toggle
+  document.getElementById("pwToggle").addEventListener("click", () => {
+    const pwInput = document.getElementById("password");
+    const eyeIcon = document.getElementById("eyeIcon");
+    const isHidden = pwInput.type === "password";
+    pwInput.type = isHidden ? "text" : "password";
+    eyeIcon.innerHTML = isHidden
+      ? `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`
+      : `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+  });
+
+  // Register
+  document.getElementById("registerBtn").onclick = async function() {
+    const name       = document.getElementById("name").value.trim();
+    const email      = document.getElementById("email").value.trim();
+    const role       = document.getElementById("role").value;
+    const department = document.getElementById("department").value;
+    const password   = document.getElementById("password").value;
+
+    const errorMsg   = document.getElementById("errorMsg");
+    const successMsg = document.getElementById("successMsg");
+    const btnText    = document.getElementById("btnText");
+    const spinner    = document.getElementById("spinner");
+    const btnArrow   = document.getElementById("btnArrow");
+    const registerBtn = document.getElementById("registerBtn");
+
+    errorMsg.classList.remove("show");
+    successMsg.classList.remove("show");
+
+    // Validation
+    if (!name)     { errorMsg.textContent = "Please enter your full name."; errorMsg.classList.add("show"); return; }
+    if (!email)    { errorMsg.textContent = "Please enter your email."; errorMsg.classList.add("show"); return; }
+    if (!role)     { errorMsg.textContent = "Please select your role."; errorMsg.classList.add("show"); return; }
+    if (["student","coordinator","hod"].includes(role) && !department) {
+      errorMsg.textContent = "Please select your department.";
+      errorMsg.classList.add("show");
+      return;
+    }
+    if (!password) { errorMsg.textContent = "Please enter a password."; errorMsg.classList.add("show"); return; }
+    if (password.length < 6) { errorMsg.textContent = "Password must be at least 6 characters."; errorMsg.classList.add("show"); return; }
+
+    // Loading
+    registerBtn.disabled = true;
+    btnText.textContent = "Registering...";
+    spinner.style.display = "block";
+    btnArrow.style.display = "none";
+
+    try {
+      const res = await fetch(`${API}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password, role, department }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message || "Registration failed");
+
+      // Show success and redirect to login after 2 seconds
+      successMsg.textContent = "Account created successfully! Redirecting to login...";
+      successMsg.classList.add("show");
+
+      setTimeout(() => {
+        window.location.href = "login.html";
+      }, 2000);
+
+    } catch (err) {
+      errorMsg.textContent = err.message || "Something went wrong. Please try again.";
+      errorMsg.classList.add("show");
+
+      registerBtn.disabled = false;
+      btnText.textContent = "Create Account";
+      spinner.style.display = "none";
+      btnArrow.style.display = "block";
+    }
+  };
+</script>
+
+</body>
+</html>

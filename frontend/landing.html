@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PHD Student Management System — Somaiya Vidyavihar University</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --red: #b8121f;
+      --red-dark: #8a0d17;
+      --white: #ffffff;
+      --off-white: #f9f7f5;
+      --gray: #6b6b6b;
+      --light-gray: #e5e1dc;
+      --text: #1c1c1c;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--off-white); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+
+    /* ── LEFT PANEL ── */
+    .left {
+      background: var(--red);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .left::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        repeating-linear-gradient(0deg, transparent, transparent 60px, rgba(255,255,255,0.03) 60px, rgba(255,255,255,0.03) 61px),
+        repeating-linear-gradient(90deg, transparent, transparent 60px, rgba(255,255,255,0.03) 60px, rgba(255,255,255,0.03) 61px);
+      pointer-events: none;
+    }
+
+    .left::after {
+      content: '';
+      position: absolute;
+      bottom: -100px; right: -100px;
+      width: 380px; height: 380px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.08);
+      pointer-events: none;
+    }
+
+    .circle-2 {
+      position: absolute;
+      bottom: -40px; right: -40px;
+      width: 240px; height: 240px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.06);
+      pointer-events: none;
+    }
+
+    .circle-3 {
+      position: absolute;
+      top: -60px; left: -60px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.05);
+      pointer-events: none;
+    }
+
+    .logo-area {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-img {
+      width: 80px; height: 80px;
+      object-fit: contain;
+      background: white;
+      border-radius: 50%;
+      padding: 8px;
+    }
+
+    .logo-text {
+      border-left: 2px solid rgba(255,255,255,0.3);
+      padding-left: 1rem;
+    }
+
+    .logo-text .univ-name {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.25rem;
+      color: var(--white);
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    .logo-text .estd {
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.5);
+      font-weight: 300;
+      margin-top: 3px;
+      letter-spacing: 0.06em;
+    }
+
+    .left-middle {
+      position: relative;
+      z-index: 1;
+    }
+
+    .academic-year {
+      font-size: 11px;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .portal-label {
+      font-family: 'EB Garamond', serif;
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      color: var(--white);
+      font-weight: 500;
+      line-height: 1.2;
+      margin-bottom: 1.25rem;
+    }
+
+    .divider {
+      width: 40px; height: 2px;
+      background: rgba(255,255,255,0.3);
+      margin-bottom: 1.25rem;
+    }
+
+    .tagline {
+      font-size: 14.5px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.8;
+      font-weight: 300;
+      max-width: 300px;
+    }
+
+    /* bottom strip on left */
+    .left-bottom {
+      position: relative;
+      z-index: 1;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 1.25rem;
+    }
+
+    .left-bottom p {
+      font-size: 11.5px;
+      color: rgba(255,255,255,0.35);
+      font-weight: 300;
+      letter-spacing: 0.03em;
+    }
+
+    /* ── RIGHT PANEL ── */
+    .right {
+      background: var(--off-white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 4rem;
+      position: relative;
+    }
+
+    .right-inner { max-width: 380px; }
+
+    .portal-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--red);
+      margin-bottom: 1.25rem;
+    }
+
+    .portal-tag::before {
+      content: '';
+      display: block;
+      width: 20px; height: 1.5px;
+      background: var(--red);
+    }
+
+    .right-title {
+      font-family: 'EB Garamond', serif;
+      font-size: clamp(1.8rem, 2.8vw, 2.5rem);
+      font-weight: 500;
+      color: var(--text);
+      line-height: 1.25;
+      margin-bottom: 1rem;
+    }
+
+    .right-sub {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.8;
+      font-weight: 300;
+      margin-bottom: 2.5rem;
+      border-left: 2px solid var(--light-gray);
+      padding-left: 1rem;
+    }
+
+    /* Notice box */
+    .notice {
+      background: var(--white);
+      border: 1px solid var(--light-gray);
+      border-left: 3px solid var(--red);
+      border-radius: 4px;
+      padding: 14px 16px;
+      margin-bottom: 2rem;
+    }
+
+    .notice p {
+      font-size: 13px;
+      color: var(--gray);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    .notice p strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    .login-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--red);
+      color: var(--white);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 14px 20px;
+      border-radius: 5px;
+      transition: background 0.2s;
+      letter-spacing: 0.02em;
+    }
+
+    .login-btn:hover { background: var(--red-dark); }
+
+    .login-btn svg {
+      width: 18px; height: 18px;
+      stroke: white; fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .help-text {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 14px;
+      font-weight: 300;
+      text-align: center;
+    }
+
+    .footer-strip {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 14px 4rem;
+      border-top: 1px solid var(--light-gray);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-strip span {
+      font-size: 11.5px;
+      color: #aaa;
+      font-weight: 300;
+    }
+
+    .footer-strip a {
+      font-size: 11.5px;
+      color: var(--red);
+      text-decoration: none;
+    }
+
+    /* Animations */
+    .fade-in { opacity: 0; animation: fadeIn 0.6s ease forwards; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .d1{ animation-delay: 0.1s }
+    .d2{ animation-delay: 0.25s }
+    .d3{ animation-delay: 0.4s }
+    .d4{ animation-delay: 0.55s }
+    .d5{ animation-delay: 0.7s }
+
+    @media (max-width: 768px) {
+      .layout { grid-template-columns: 1fr; }
+      .left { min-height: 50vh; padding: 2.5rem 2rem; }
+      .right { padding: 3rem 2rem 5rem; }
+      .right-inner { max-width: 100%; }
+      .footer-strip { padding: 14px 2rem; }
+    }
+
+    .register-btn {
+  display: block;
+  text-align: center;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--gray);
+  text-decoration: none;
+  font-weight: 300;
+  transition: color 0.2s;
+}
+
+.register-btn:hover { color: var(--red); }
+  </style>
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- LEFT -->
+  <div class="left">
+    <div class="circle-2"></div>
+    <div class="circle-3"></div>
+
+    <div class="logo-area fade-in d1">
+      <img class="logo-img"
+        src="https://upload.wikimedia.org/wikipedia/en/thumb/0/08/Somaiya_Vidyavihar_University_logo.png/220px-Somaiya_Vidyavihar_University_logo.png"
+        alt="Somaiya Logo"
+        onerror="this.style.display='none'"
+      />
+      <div class="logo-text">
+        <div class="univ-name">Somaiya Vidyavihar<br/>University</div>
+        <div class="estd">Estd. 1959 · Mumbai, India</div>
+      </div>
+    </div>
+
+    <div class="left-middle fade-in d2">
+      <div class="academic-year">Academic Year 2024 — 25</div>
+      <div class="portal-label">PHD Student<br/>Management<br/>System</div>
+      <div class="divider"></div>
+      <div class="tagline">
+        A centralized portal for PHD students,
+        faculty, and university administration.
+      </div>
+    </div>
+
+    <div class="left-bottom fade-in d3">
+      <p>&copy; 2026 Somaiya Vidyavihar University. All rights reserved.</p>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="right-inner">
+
+      <p class="portal-tag fade-in d1">Official University Portal</p>
+
+      <h1 class="right-title fade-in d2">
+        Welcome to the<br/>PHD Portal
+      </h1>
+
+      <p class="right-sub fade-in d3">
+        Proceed to your designated portal
+      </p>
+
+      <div class="notice fade-in d4">
+        <p>
+          <strong>Note:</strong> This portal is intended for use by
+          registered PHD students, coordinators, HODs, and
+          university administration only.
+        </p>
+      </div>
+
+     <a href="login.html" class="login-btn fade-in d5">
+  <span>Login to your account</span>
+  <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+</a>
+
+<a href="register.html" class="register-btn fade-in d5">
+  New user? Register here
+</a>
+
+      <p class="help-text fade-in d5">
+        Having trouble? Contact your department coordinator.
+      </p>
+
+    </div>
+
+    <div class="footer-strip">
+      <span>PHD Student Management System</span>
+      <a href="#">IT Support</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

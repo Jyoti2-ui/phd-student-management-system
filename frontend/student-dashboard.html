@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Dashboard — PHD Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --red: #b8121f;
+      --red-dark: #8a0d17;
+      --red-pale: #fdf0f1;
+      --white: #ffffff;
+      --off-white: #f9f7f5;
+      --gray: #6b6b6b;
+      --light-gray: #e5e1dc;
+      --text: #1c1c1c;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--off-white); color: var(--text); min-height: 100vh; }
+
+    /* ── NAVBAR ── */
+    nav {
+      background: var(--white);
+      border-bottom: 1px solid var(--light-gray);
+      padding: 0 2.5rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .nav-logo {
+      width: 38px; height: 38px;
+      object-fit: contain;
+      background: var(--red-pale);
+      border-radius: 50%;
+      padding: 4px;
+    }
+
+    .nav-title {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-title span:first-child {
+      font-family: 'EB Garamond', serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .nav-title span:last-child {
+      font-size: 11px;
+      color: var(--gray);
+      font-weight: 300;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--red);
+      color: white;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .nav-user-info span:first-child {
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .nav-user-info span:last-child {
+      font-size: 11px;
+      color: var(--gray);
+      font-weight: 300;
+    }
+
+    .logout-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--gray);
+      background: none;
+      border: 1px solid var(--light-gray);
+      border-radius: 4px;
+      padding: 7px 14px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      transition: all 0.2s;
+    }
+
+    .logout-btn:hover {
+      border-color: var(--red);
+      color: var(--red);
+    }
+
+    .logout-btn svg {
+      width: 14px; height: 14px;
+      stroke: currentColor; fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 4rem;
+    }
+
+    .page-header {
+      margin-bottom: 2rem;
+    }
+
+    .page-tag {
+      font-size: 11px;
+      color: var(--red);
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .page-title {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.9rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* ── PROFILE CARD ── */
+    .profile-card {
+      background: var(--white);
+      border: 1px solid var(--light-gray);
+      border-radius: 10px;
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .profile-avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--red);
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'EB Garamond', serif;
+      flex-shrink: 0;
+    }
+
+    .profile-info { flex: 1; }
+
+    .profile-name {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.4rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .profile-email {
+      font-size: 13.5px;
+      color: var(--gray);
+      font-weight: 300;
+      margin-bottom: 10px;
+    }
+
+    .profile-badges {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      font-size: 11.5px;
+      font-weight: 500;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+
+    .badge-role {
+      background: var(--red-pale);
+      color: var(--red);
+      border: 1px solid #f5c0c4;
+    }
+
+    .badge-dept {
+      background: #f0f4ff;
+      color: #2d5be3;
+      border: 1px solid #c5d3f8;
+    }
+
+    /* ── INFO ROW ── */
+    .info-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 2rem;
+    }
+
+    .info-box {
+      background: var(--white);
+      border: 1px solid var(--light-gray);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+    }
+
+    .info-box-label {
+      font-size: 11px;
+      color: var(--gray);
+      font-weight: 400;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .info-box-value {
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* ── COMMENTS SECTION ── */
+    .section-title {
+      font-family: 'EB Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .comment-count {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      background: var(--red-pale);
+      color: var(--red);
+      padding: 2px 9px;
+      border-radius: 20px;
+    }
+
+    .no-comments {
+      background: var(--white);
+      border: 1px solid var(--light-gray);
+      border-radius: 8px;
+      padding: 2.5rem;
+      text-align: center;
+    }
+
+    .no-comments svg {
+      width: 36px; height: 36px;
+      stroke: #ccc; fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      margin-bottom: 10px;
+    }
+
+    .no-comments p {
+      font-size: 14px;
+      color: #bbb;
+      font-weight: 300;
+    }
+
+    .comments-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .comment-card {
+      background: var(--white);
+      border: 1px solid var(--light-gray);
+      border-left: 3px solid var(--red);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+    }
+
+    .comment-text {
+      font-size: 14.5px;
+      color: var(--text);
+      line-height: 1.7;
+      font-weight: 300;
+      margin-bottom: 10px;
+    }
+
+    .comment-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .comment-author-dot {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: var(--red);
+      color: white;
+      font-size: 10px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .comment-author {
+      font-size: 12.5px;
+      color: var(--gray);
+      font-weight: 400;
+    }
+
+    .comment-author span {
+      color: var(--red);
+      font-weight: 500;
+    }
+
+    .comment-date {
+      margin-left: auto;
+      font-size: 11.5px;
+      color: #bbb;
+      font-weight: 300;
+    }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--gray);
+      font-size: 14px;
+      font-weight: 300;
+    }
+
+    .loading-spinner {
+      width: 24px; height: 24px;
+      border: 2px solid var(--light-gray);
+      border-top-color: var(--red);
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin: 0 auto 10px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Fade in */
+    .fade-in { opacity: 0; animation: fadeIn 0.5s ease forwards; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .d1{ animation-delay: 0.1s }
+    .d2{ animation-delay: 0.2s }
+    .d3{ animation-delay: 0.3s }
+
+    @media (max-width: 600px) {
+      nav { padding: 0 1.25rem; }
+      .info-row { grid-template-columns: 1fr 1fr; }
+      .profile-card { flex-direction: column; text-align: center; }
+      .profile-badges { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav>
+    <div class="nav-left">
+      <img class="nav-logo"
+        src="https://upload.wikimedia.org/wikipedia/en/thumb/0/08/Somaiya_Vidyavihar_University_logo.png/220px-Somaiya_Vidyavihar_University_logo.png"
+        alt="Somaiya"
+        onerror="this.style.display='none'"
+      />
+      <div class="nav-title">
+        <span>PHD Student Portal</span>
+        <span>Somaiya Vidyavihar University</span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-user">
+        <div class="avatar" id="navAvatar">--</div>
+        <div class="nav-user-info">
+          <span id="navName">Loading...</span>
+          <span>Student</span>
+        </div>
+      </div>
+      <button class="logout-btn" id="logoutBtn">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main>
+    <div id="loadingState" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading your profile...</p>
+    </div>
+
+    <div id="dashboardContent" style="display:none">
+
+      <div class="page-header fade-in d1">
+        <div class="page-tag">Student Dashboard</div>
+        <h1 class="page-title" id="pageTitle">Welcome back</h1>
+      </div>
+
+      <!-- Profile Card -->
+      <div class="profile-card fade-in d1">
+        <div class="profile-avatar" id="profileAvatar">--</div>
+        <div class="profile-info">
+          <div class="profile-name" id="profileName">--</div>
+          <div class="profile-email" id="profileEmail">--</div>
+          <div class="profile-badges">
+            <span class="badge badge-role">PHD Student</span>
+            <span class="badge badge-dept" id="profileDept">--</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Row -->
+      <div class="info-row fade-in d2">
+        <div class="info-box">
+          <div class="info-box-label">Full Name</div>
+          <div class="info-box-value" id="infoName">--</div>
+        </div>
+        <div class="info-box">
+          <div class="info-box-label">Department</div>
+          <div class="info-box-value" id="infoDept">--</div>
+        </div>
+        <div class="info-box">
+          <div class="info-box-label">Total Comments</div>
+          <div class="info-box-value" id="infoComments">0</div>
+        </div>
+      </div>
+
+      <!-- Comments -->
+      <div class="fade-in d3">
+        <h2 class="section-title">
+          HOD Comments
+          <span class="comment-count" id="commentCount">0</span>
+        </h2>
+        <div id="commentsContainer"></div>
+      </div>
+
+    </div>
+  </main>
+
+<script>
+  const API = "http://localhost:3000";
+
+  function getInitials(name) {
+    if (!name) return "--";
+    return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+  }
+
+  async function loadDashboard() {
+    try {
+      // Check sessionStorage first
+      const role = sessionStorage.getItem("role");
+      if (!role || role !== "student") {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const res = await fetch(`${API}/student/me`, {
+        credentials: "include",
+      });
+
+      // If 401 — try sending email from sessionStorage to re-authenticate
+      if (res.status === 401) {
+        window.location.href = "login.html";
+        return;
+      }
+
+      if (!res.ok) throw new Error("Failed to load profile");
+
+      const data = await res.json();
+
+      document.getElementById("loadingState").style.display = "none";
+      document.getElementById("dashboardContent").style.display = "block";
+
+      document.getElementById("navAvatar").textContent = getInitials(data.name);
+      document.getElementById("navName").textContent = data.name;
+      document.getElementById("profileAvatar").textContent = getInitials(data.name);
+      document.getElementById("profileName").textContent = data.name;
+      document.getElementById("profileEmail").textContent = data.email;
+      document.getElementById("profileDept").textContent = data.department || "N/A";
+      document.getElementById("pageTitle").textContent = "Welcome, " + data.name.split(" ")[0];
+      document.getElementById("infoName").textContent = data.name;
+      document.getElementById("infoDept").textContent = data.department || "N/A";
+      document.getElementById("infoComments").textContent = data.comments?.length || 0;
+
+      const comments = data.comments || [];
+      document.getElementById("commentCount").textContent = comments.length;
+
+      const container = document.getElementById("commentsContainer");
+
+      if (comments.length === 0) {
+        container.innerHTML = `
+          <div class="no-comments">
+            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <p>No comments from your HOD yet.</p>
+          </div>`;
+      } else {
+        container.innerHTML = `<div class="comments-list">
+          ${comments.map(c => `
+            <div class="comment-card">
+              <div class="comment-text">${c.text}</div>
+              <div class="comment-meta">
+                <div class="comment-author-dot">${getInitials(c.addedBy?.name || "H")}</div>
+                <div class="comment-author">
+                  <span>${c.addedBy?.name || "HOD"}</span> &mdash; Head of Department
+                </div>
+                <div class="comment-date">${formatDate(c.addedAt)}</div>
+              </div>
+            </div>
+          `).join("")}
+        </div>`;
+      }
+
+    } catch (err) {
+      document.getElementById("loadingState").innerHTML = `
+        <p style="color:#c0152a">Something went wrong. Please <a href="login.html" style="color:#c0152a">login again</a>.</p>`;
+    }
+  }
+
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    sessionStorage.clear();
+    await fetch(`${API}/auth/logout`, { method: "POST", credentials: "include" });
+    window.location.href = "login.html";
+  });
+
+  loadDashboard();
+</script>
+
+</body>
+</html>

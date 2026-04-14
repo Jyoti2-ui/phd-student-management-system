@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Head Coordinator Dashboard — PHD Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --red: #b8121f;
+      --red-dark: #8a0d17;
+      --red-pale: #fdf0f1;
+      --white: #ffffff;
+      --off-white: #f9f7f5;
+      --gray: #6b6b6b;
+      --light-gray: #e5e1dc;
+      --text: #1c1c1c;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--off-white); color: var(--text); min-height: 100vh; }
+
+    nav { background: var(--white); border-bottom: 1px solid var(--light-gray); padding: 0 2.5rem; height: 64px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+    .nav-left { display: flex; align-items: center; gap: 12px; }
+    .nav-logo { width: 38px; height: 38px; object-fit: contain; background: var(--red-pale); border-radius: 50%; padding: 4px; }
+    .nav-title { display: flex; flex-direction: column; }
+    .nav-title span:first-child { font-family: 'EB Garamond', serif; font-size: 15px; font-weight: 500; color: var(--text); }
+    .nav-title span:last-child { font-size: 11px; color: var(--gray); font-weight: 300; }
+    .nav-right { display: flex; align-items: center; gap: 14px; }
+    .nav-user { display: flex; align-items: center; gap: 8px; }
+    .avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--red); color: white; font-size: 13px; font-weight: 500; display: flex; align-items: center; justify-content: center; }
+    .nav-user-info { display: flex; flex-direction: column; }
+    .nav-user-info span:first-child { font-size: 13.5px; font-weight: 500; color: var(--text); }
+    .nav-user-info span:last-child { font-size: 11px; color: var(--gray); font-weight: 300; }
+    .logout-btn { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; color: var(--gray); background: none; border: 1px solid var(--light-gray); border-radius: 4px; padding: 7px 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+    .logout-btn:hover { border-color: var(--red); color: var(--red); }
+    .logout-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    main { max-width: 1000px; margin: 0 auto; padding: 2.5rem 2rem 4rem; }
+    .page-header { margin-bottom: 2rem; }
+    .page-tag { font-size: 11px; color: var(--red); font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+    .page-title { font-family: 'EB Garamond', serif; font-size: 1.9rem; font-weight: 500; color: var(--text); }
+    .page-sub { font-size: 13.5px; color: var(--gray); font-weight: 300; margin-top: 4px; }
+
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 2rem; }
+    .stat-card { background: var(--white); border: 1px solid var(--light-gray); border-radius: 8px; padding: 1.25rem; }
+    .stat-label { font-size: 11px; color: var(--gray); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+    .stat-value { font-family: 'EB Garamond', serif; font-size: 2rem; font-weight: 600; color: var(--red); line-height: 1; }
+    .stat-desc { font-size: 12px; color: var(--gray); font-weight: 300; margin-top: 4px; }
+
+    /* Filter bar */
+    .filter-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+    .filter-bar select { padding: 8px 12px; border: 1px solid var(--light-gray); border-radius: 5px; font-size: 13px; font-family: 'DM Sans', sans-serif; color: var(--text); background: var(--white); outline: none; cursor: pointer; }
+    .filter-bar select:focus { border-color: var(--red); }
+
+    .section-title { font-family: 'EB Garamond', serif; font-size: 1.3rem; font-weight: 500; color: var(--text); margin-bottom: 1rem; }
+
+    .table-wrap { background: var(--white); border: 1px solid var(--light-gray); border-radius: 10px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead { background: var(--off-white); border-bottom: 1px solid var(--light-gray); }
+    thead th { padding: 12px 16px; text-align: left; font-size: 11.5px; font-weight: 500; color: var(--gray); letter-spacing: 0.04em; text-transform: uppercase; }
+    tbody tr { border-bottom: 1px solid var(--light-gray); transition: background 0.15s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: var(--off-white); }
+    tbody td { padding: 13px 16px; font-size: 13.5px; color: var(--text); font-weight: 300; }
+
+    .student-name-cell { display: flex; align-items: center; gap: 10px; }
+    .table-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--red); color: white; font-size: 11px; font-weight: 500; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .dept-badge { display: inline-block; font-size: 11.5px; font-weight: 500; padding: 2px 9px; border-radius: 20px; background: #f0f4ff; color: #2d5be3; border: 1px solid #c5d3f8; }
+
+    .edit-btn { display: inline-flex; align-items: center; gap: 5px; font-size: 12.5px; font-weight: 500; color: var(--red); background: var(--red-pale); border: 1px solid #f5c0c4; border-radius: 4px; padding: 5px 12px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+    .edit-btn:hover { background: #f9d5d7; }
+    .edit-btn svg { width: 13px; height: 13px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.open { display: flex; }
+    .modal { background: var(--white); border-radius: 10px; padding: 2rem; width: 100%; max-width: 460px; margin: 1rem; }
+    .modal-title { font-family: 'EB Garamond', serif; font-size: 1.4rem; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+    .modal-sub { font-size: 13px; color: var(--gray); font-weight: 300; margin-bottom: 1.25rem; }
+    .form-group { margin-bottom: 1rem; }
+    .form-group label { display: block; font-size: 12.5px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
+    .form-group input { width: 100%; padding: 10px 14px; border: 1px solid var(--light-gray); border-radius: 5px; font-size: 14px; font-family: 'DM Sans', sans-serif; font-weight: 300; color: var(--text); outline: none; transition: border-color 0.2s; }
+    .form-group input:focus { border-color: var(--red); }
+    .modal-note { font-size: 12px; color: var(--gray); background: var(--off-white); border-radius: 4px; padding: 8px 12px; margin-bottom: 1rem; font-weight: 300; }
+    .modal-error { font-size: 12.5px; color: var(--red); margin-bottom: 8px; display: none; }
+    .modal-error.show { display: block; }
+    .modal-actions { display: flex; gap: 10px; margin-top: 1.25rem; }
+    .modal-cancel { flex: 1; padding: 10px; border: 1px solid var(--light-gray); border-radius: 5px; background: none; font-size: 13.5px; font-family: 'DM Sans', sans-serif; color: var(--gray); cursor: pointer; }
+    .modal-cancel:hover { border-color: var(--gray); }
+    .modal-submit { flex: 2; padding: 10px; border: none; border-radius: 5px; background: var(--red); color: white; font-size: 13.5px; font-weight: 500; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: background 0.2s; }
+    .modal-submit:hover { background: var(--red-dark); }
+    .modal-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+    .toast { position: fixed; bottom: 2rem; right: 2rem; background: #1c1c1c; color: white; font-size: 13.5px; padding: 12px 20px; border-radius: 6px; font-weight: 300; opacity: 0; transform: translateY(10px); transition: all 0.3s; z-index: 300; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    .loading { text-align: center; padding: 3rem; color: var(--gray); font-size: 14px; font-weight: 300; }
+    .loading-spinner { width: 24px; height: 24px; border: 2px solid var(--light-gray); border-top-color: var(--red); border-radius: 50%; animation: spin 0.7s linear infinite; margin: 0 auto 10px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .empty-state { text-align: center; padding: 2rem; color: #bbb; font-size: 14px; font-weight: 300; }
+
+    .fade-in { opacity: 0; animation: fadeIn 0.5s ease forwards; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .d1{ animation-delay: 0.1s } .d2{ animation-delay: 0.2s } .d3{ animation-delay: 0.3s }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-left">
+      <img class="nav-logo" src="https://upload.wikimedia.org/wikipedia/en/thumb/0/08/Somaiya_Vidyavihar_University_logo.png/220px-Somaiya_Vidyavihar_University_logo.png" alt="Somaiya" onerror="this.style.display='none'"/>
+      <div class="nav-title">
+        <span>PHD Portal — Head Coordinator</span>
+        <span>Somaiya Vidyavihar University</span>
+      </div>
+    </div>
+    <div class="nav-right">
+      <div class="nav-user">
+        <div class="avatar" id="navAvatar">HC</div>
+        <div class="nav-user-info">
+          <span id="navName">Head Coordinator</span>
+          <span>All Departments</span>
+        </div>
+      </div>
+      <button class="logout-btn" id="logoutBtn">
+        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Logout
+      </button>
+    </div>
+  </nav>
+
+  <main>
+    <div id="loadingState" class="loading">
+      <div class="loading-spinner"></div>
+      <p>Loading dashboard...</p>
+    </div>
+
+    <div id="dashboardContent" style="display:none">
+
+      <div class="page-header fade-in d1">
+        <div class="page-tag">Head Coordinator Dashboard</div>
+        <h1 class="page-title">All Students — University Wide</h1>
+        <p class="page-sub">View and edit students across all departments</p>
+      </div>
+
+      <div class="stats-row fade-in d2">
+        <div class="stat-card">
+          <div class="stat-label">Total Students</div>
+          <div class="stat-value" id="statTotal">0</div>
+          <div class="stat-desc">Across all departments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Departments</div>
+          <div class="stat-value" id="statDepts">0</div>
+          <div class="stat-desc">Active departments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Comments</div>
+          <div class="stat-value" id="statComments">0</div>
+          <div class="stat-desc">HOD comments given</div>
+        </div>
+      </div>
+
+      <div class="fade-in d3">
+        <div class="filter-bar">
+          <h2 class="section-title" style="margin:0;flex:1">All Students</h2>
+          <select id="deptFilter" onchange="filterStudents()">
+            <option value="">All Departments</option>
+          </select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Student</th>
+                <th>Email</th>
+                <th>Department</th>
+                <th>Comments</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTable">
+              <tr><td colspan="5" class="empty-state">Loading...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- EDIT MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+      <div class="modal-title">Edit Student</div>
+      <div class="modal-sub" id="modalStudentName">--</div>
+      <div class="modal-note">You can update name, email and department.</div>
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="editName" placeholder="Enter new name"/>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="editEmail" placeholder="Enter new email"/>
+      </div>
+      <div class="form-group">
+        <label>Department</label>
+        <input type="text" id="editDept" placeholder="e.g. CSE, IT, Mechanical"/>
+      </div>
+      <div class="modal-error" id="modalError">Please fill in at least one field.</div>
+      <div class="modal-actions">
+        <button class="modal-cancel" id="modalCancel">Cancel</button>
+        <button class="modal-submit" id="modalSubmit">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+  const API = "http://localhost:3000";
+  let allStudents = [];
+  let selectedStudentId = null;
+
+  function getInitials(name) {
+    if (!name) return "--";
+    return name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+  }
+
+  function showToast(msg) {
+    const toast = document.getElementById("toast");
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 3000);
+  }
+
+  function renderTable(students) {
+    const tbody = document.getElementById("studentsTable");
+    if (students.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="empty-state">No students found.</td></tr>`;
+      return;
+    }
+    tbody.innerHTML = students.map(s => `
+      <tr>
+        <td>
+          <div class="student-name-cell">
+            <div class="table-avatar">${getInitials(s.name)}</div>
+            <div>${s.name}</div>
+          </div>
+        </td>
+        <td style="font-size:12.5px;color:var(--gray)">${s.email}</td>
+        <td><span class="dept-badge">${s.department || "N/A"}</span></td>
+        <td style="color:var(--red);font-weight:500">${s.comments?.length || 0}</td>
+        <td>
+          <button class="edit-btn" onclick="openModal('${s._id}', '${s.name}', '${s.email}', '${s.department || ""}')">
+            <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            Edit
+          </button>
+        </td>
+      </tr>
+    `).join("");
+  }
+
+  function filterStudents() {
+    const dept = document.getElementById("deptFilter").value;
+    const filtered = dept ? allStudents.filter(s => s.department === dept) : allStudents;
+    renderTable(filtered);
+  }
+
+  async function loadDashboard() {
+    try {
+      const role = sessionStorage.getItem("role");
+      if (!role || role !== "head_coordinator") {
+        window.location.href = "login.html";
+        return;
+      }
+
+      const res = await fetch(`${API}/headcoordinator/students`, { credentials: "include" });
+      if (res.status === 401 || res.status === 403) { window.location.href = "login.html"; return; }
+      if (!res.ok) throw new Error("Failed to load");
+
+      allStudents = await res.json();
+
+      document.getElementById("loadingState").style.display = "none";
+      document.getElementById("dashboardContent").style.display = "block";
+
+      // Stats
+      const depts = [...new Set(allStudents.map(s => s.department).filter(Boolean))];
+      const totalComments = allStudents.reduce((sum, s) => sum + (s.comments?.length || 0), 0);
+      document.getElementById("statTotal").textContent = allStudents.length;
+      document.getElementById("statDepts").textContent = depts.length;
+      document.getElementById("statComments").textContent = totalComments;
+
+      // Fill department filter
+      const select = document.getElementById("deptFilter");
+      depts.forEach(d => {
+        const opt = document.createElement("option");
+        opt.value = d;
+        opt.textContent = d;
+        select.appendChild(opt);
+      });
+
+      renderTable(allStudents);
+
+    } catch (err) {
+      document.getElementById("loadingState").innerHTML =
+        `<p style="color:#c0152a">Something went wrong. Please <a href="login.html" style="color:#c0152a">login again</a>.</p>`;
+    }
+  }
+
+  window.openModal = function(id, name, email, dept) {
+    selectedStudentId = id;
+    document.getElementById("modalStudentName").textContent = "Editing: " + name;
+    document.getElementById("editName").value = name;
+    document.getElementById("editEmail").value = email;
+    document.getElementById("editDept").value = dept;
+    document.getElementById("modalError").classList.remove("show");
+    document.getElementById("modalOverlay").classList.add("open");
+  };
+
+  document.getElementById("modalCancel").addEventListener("click", () => {
+    document.getElementById("modalOverlay").classList.remove("open");
+  });
+
+  document.getElementById("modalOverlay").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("modalOverlay"))
+      document.getElementById("modalOverlay").classList.remove("open");
+  });
+
+  document.getElementById("modalSubmit").addEventListener("click", async () => {
+    const name  = document.getElementById("editName").value.trim();
+    const email = document.getElementById("editEmail").value.trim();
+    const dept  = document.getElementById("editDept").value.trim();
+    const errEl = document.getElementById("modalError");
+    const submitBtn = document.getElementById("modalSubmit");
+
+    errEl.classList.remove("show");
+    if (!name && !email && !dept) { errEl.classList.add("show"); return; }
+
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Saving...";
+
+    try {
+      const res = await fetch(`${API}/headcoordinator/students/${selectedStudentId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name, email, department: dept }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
+
+      const student = allStudents.find(s => s._id === selectedStudentId);
+      if (student) { student.name = name; student.email = email; student.department = dept; }
+
+      document.getElementById("modalOverlay").classList.remove("open");
+      filterStudents();
+      showToast("Student updated successfully");
+
+    } catch (err) {
+      errEl.textContent = err.message || "Failed to update.";
+      errEl.classList.add("show");
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Save Changes";
+    }
+  });
+
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+    sessionStorage.clear();
+    await fetch(`${API}/auth/logout`, { method: "POST", credentials: "include" });
+    window.location.href = "login.html";
+  });
+
+  loadDashboard();
+</script>
+
+</body>
+</html>
